@@ -118,6 +118,8 @@ MODULE_FIRMWARE("radeon/banks_k_2_smc.bin");
 
 MODULE_FIRMWARE("radeon/si58_mc.bin");
 
+MODULE_FIRMWARE("radeon/si58_mc.bin");
+
 static u32 si_get_cu_active_bitmap(struct radeon_device *rdev, u32 se, u32 sh);
 static void si_pcie_gen3_enable(struct radeon_device *rdev);
 static void si_program_aspm(struct radeon_device *rdev);
@@ -1747,6 +1749,10 @@ static int si_init_microcode(struct radeon_device *rdev)
 		break;
 	default: BUG();
 	}
+
+	/* this memory configuration requires special firmware */
+	if (((RREG32(MC_SEQ_MISC0) & 0xff000000) >> 24) == 0x58)
+		si58_fw = true;
 
 	/* this memory configuration requires special firmware */
 	if (((RREG32(MC_SEQ_MISC0) & 0xff000000) >> 24) == 0x58)
